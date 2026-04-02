@@ -59,29 +59,35 @@ const canonicalURL = new URL(
 		class="bg-[#fcfcfc] dark:bg-[#111] text-[#111] dark:text-gray-200 font-sans antialiased leading-relaxed max-w-2xl mx-auto px-6 transition-colors duration-300"
 	>
 		<script is:inline>
-			const theme = (() => {
-				if (
-					typeof localStorage !== "undefined" &&
-					localStorage.getItem("theme")
-				) {
-					return localStorage.getItem("theme");
-				}
-				if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-					return "dark";
-				}
-				return "light";
-			})();
+			function applyTheme() {
+				const theme = (() => {
+					if (
+						typeof localStorage !== "undefined" &&
+						localStorage.getItem("theme")
+					) {
+						return localStorage.getItem("theme");
+					}
+					if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+						return "dark";
+					}
+					return "light";
+				})();
 
-			if (theme === "light") {
-				document.documentElement.classList.remove("dark");
-			} else {
-				document.documentElement.classList.add("dark");
+				if (theme === "light") {
+					document.documentElement.classList.remove("dark");
+				} else {
+					document.documentElement.classList.add("dark");
+				}
+				window.localStorage.setItem("theme", theme);
 			}
-			window.localStorage.setItem("theme", theme);
+
+			applyTheme();
+
+			document.addEventListener("astro:after-swap", applyTheme);
 		</script>
 
 		<header
-			class="flex justify-between items-start sticky top-0 bg-[#fcfcfc] dark:bg-[#111] z-40 pt-12 md:pt-20 mb-12 border-b border-gray-200 dark:border-gray-800 pb-6 transition-colors duration-300"
+			class="flex justify-between items-start sticky top-0 bg-[#fcfcfc] dark:bg-[#111] z-40 pt-8 mb-12 border-b border-gray-200 dark:border-gray-800 pb-6 transition-colors duration-300"
 		>
 			<div>
 				<h1 class="text-xl font-semibold mb-4">
