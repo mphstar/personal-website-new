@@ -8,6 +8,31 @@ interface ExperienceItem {
 
 const data_experience: ExperienceItem[] = [
   {
+    company: "Ramah Community",
+    role: "Founder & Owner",
+    date: "Sep 2025 - Present",
+    location: "Roblox Platform",
+    descriptions: [
+      "Founded and led a thriving Roblox game development community focused on creating immersive exploration, obby, and hangout experiences.",
+      "Designed and developed engaging in-game features, mechanics, and interactive map environments within Roblox Studio.",
+      "Managed and grew a vibrant community across Roblox and Discord, fostering collaboration and player engagement.",
+      "Oversaw content strategy, community moderation, and creative direction to maintain a welcoming and active player base."
+    ]
+  },
+  {
+    company: "Ferbains",
+    role: "Fullstack Developer",
+    date: "May 2025 - Present",
+    location: "Indonesia",
+    descriptions: [
+      "Architected and developed responsive frontend interfaces while seamlessly integrating them with robust backend services.",
+      "Managed end-to-end deployment pipelines, ensuring smooth releases to production servers.",
+      "Designed and optimized database schemas to support scalable and efficient data management.",
+      "Collaborated across teams to deliver high-quality, production-ready web applications."
+    ]
+  },
+
+  {
     company: "PT OTAK KANAN",
     role: "Frontend Developer",
     date: "Agu 2024 - Des 2024",
