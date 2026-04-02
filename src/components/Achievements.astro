@@ -1,0 +1,49 @@
+---
+import data from '../models/data_achievements';
+---
+
+<section>
+  <h2 class="text-2xl font-semibold mb-6 flex items-center dark:text-gray-100">
+    <svg class="w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+    Featured Notes & Achievements
+  </h2>
+  <div class="space-y-10">
+    {data.map((item) => (
+      <div class="flex flex-col py-1">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">{item.judul}</h3>
+        <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">{item.penerbit} &bull; {item.tanggal}</p>
+        
+        {item.foto && item.foto.length > 0 && (
+          <div class="mb-4">
+            {item.foto.map((img, index) => (
+              <a 
+                href={img} 
+                class={`gallery-trigger ${index !== 0 ? 'hidden' : ''}`} 
+                data-title={item.judul}
+              >
+                {index === 0 && (
+                  <img 
+                    src={img} 
+                    alt={item.judul} 
+                    class="w-full max-h-64 object-cover border border-gray-200 dark:border-gray-800 rounded-lg drop-shadow-sm opacity-90 dark:opacity-80 hover:opacity-100 transition-opacity cursor-zoom-in"
+                    loading="lazy"
+                  />
+                )}
+              </a>
+            ))}
+          </div>
+        )}
+
+        {item.keahlian && item.keahlian.length > 0 && (
+          <div class="flex flex-wrap gap-2 text-sm text-gray-500">
+            {item.keahlian.map((skill) => (
+              <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700">
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    ))}
+  </div>
+</section>
