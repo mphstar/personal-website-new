@@ -16,7 +16,8 @@ const data_experience: ExperienceItem[] = [
       "Founded and led a thriving Roblox game development community focused on creating immersive exploration, obby, and hangout experiences.",
       "Designed and developed engaging in-game features, mechanics, and interactive map environments within Roblox Studio.",
       "Managed and grew a vibrant community across Roblox and Discord, fostering collaboration and player engagement.",
-      "Oversaw content strategy, community moderation, and creative direction to maintain a welcoming and active player base."
+      "Oversaw content strategy, community moderation, and creative direction to maintain a welcoming and active player base.",
+      "Achieved a significant milestone of 975k+ total visits, showcasing the popularity and reach of the developed games."
     ]
   },
   {
