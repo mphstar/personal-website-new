@@ -2,19 +2,19 @@
 import data from '../models/data_portfolio';
 ---
 
-<section>
+<section class="animate-fade-in">
   <h2 class="text-2xl font-semibold mb-6 flex items-center dark:text-gray-100">
     <svg class="w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
     Featured Works
   </h2>
   <div class="space-y-12">
     {data.map((item) => (
-      <div class="flex flex-col">
+      <div class="flex flex-col reveal-on-scroll">
         <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1 flex items-center group">
           {item.redirect ? (
             <a href={item.redirect as string} class="hover:underline text-black dark:text-white flex items-center" target="_blank" rel="noopener noreferrer">
               {item.title}
-              <svg class="w-4 h-4 ml-1.5 text-gray-400 dark:text-gray-500 group-hover:text-black dark:group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+              <svg class="w-4 h-4 ml-1.5 text-gray-400 dark:text-gray-500 group-hover:text-black dark:group-hover:text-white transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-all duration-300 ease-out" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
             </a>
           ) : (
             <span>{item.title}</span>
@@ -22,11 +22,11 @@ import data from '../models/data_portfolio';
         </h3>
 
         {item.image && (
-          <a href={item.image} class="gallery-trigger" data-title={item.title}>
+          <a href={item.image} class="gallery-trigger block overflow-hidden rounded-lg my-3 group" data-title={item.title}>
             <img 
               src={item.image} 
               alt={item.title as string} 
-              class="w-full max-h-64 object-cover border border-gray-200 dark:border-gray-800 rounded-lg drop-shadow-sm my-3 opacity-90 dark:opacity-80 hover:opacity-100 transition-opacity cursor-zoom-in"
+              class="w-full max-h-64 object-cover border border-gray-200 dark:border-gray-800 rounded-lg drop-shadow-sm opacity-90 dark:opacity-80 hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02] cursor-zoom-in"
               loading="lazy"
             />
           </a>

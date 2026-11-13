@@ -2,14 +2,14 @@
 import data from '../models/data_achievements';
 ---
 
-<section>
+<section class="animate-fade-in">
   <h2 class="text-2xl font-semibold mb-6 flex items-center dark:text-gray-100">
     <svg class="w-5 h-5 mr-2 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
     Featured Notes & Achievements
   </h2>
   <div class="space-y-10">
     {data.map((item) => (
-      <div class="flex flex-col py-1">
+      <div class="flex flex-col py-1 reveal-on-scroll">
         <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">{item.judul}</h3>
         <p class="text-gray-600 dark:text-gray-400 text-sm mb-3">{item.penerbit} &bull; {item.tanggal}</p>
         
@@ -18,14 +18,14 @@ import data from '../models/data_achievements';
             {item.foto.map((img, index) => (
               <a 
                 href={img} 
-                class={`gallery-trigger ${index !== 0 ? 'hidden' : ''}`} 
+                class={`gallery-trigger block overflow-hidden rounded-lg group ${index !== 0 ? 'hidden' : ''}`} 
                 data-title={item.judul}
               >
                 {index === 0 && (
                   <img 
                     src={img} 
                     alt={item.judul} 
-                    class="w-full max-h-64 object-cover border border-gray-200 dark:border-gray-800 rounded-lg drop-shadow-sm opacity-90 dark:opacity-80 hover:opacity-100 transition-opacity cursor-zoom-in"
+                    class="w-full max-h-64 object-cover border border-gray-200 dark:border-gray-800 rounded-lg drop-shadow-sm opacity-90 dark:opacity-80 hover:opacity-100 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-[1.02] cursor-zoom-in"
                     loading="lazy"
                   />
                 )}

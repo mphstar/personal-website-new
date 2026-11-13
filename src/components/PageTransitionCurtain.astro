@@ -1,0 +1,226 @@
+---
+---
+
+<!-- Liquid Organic SVG Wave Page Transition with Loading Pause (Dennis Snellenberg / Locomotive style) -->
+<div
+  id="liquid-curtain-container"
+  transition:persist="liquid-curtain"
+  class="fixed inset-0 z-[9999] pointer-events-none w-screen h-screen overflow-hidden"
+  aria-hidden="true"
+>
+  <!-- Fullscreen Liquid SVG Canvas -->
+  <svg
+    class="absolute inset-0 w-full h-full pointer-events-none"
+    viewBox="0 0 100 100"
+    preserveAspectRatio="none"
+  >
+    <path
+      id="liquid-wave-path"
+      class="fill-[#0e0e11] dark:fill-[#08080a]"
+      d="M 0 100 V 100 Q 50 100 100 100 V 100 z"
+    ></path>
+  </svg>
+
+  <!-- Centered Kinetic Loading Signature -->
+  <div
+    id="liquid-brand-wrapper"
+    class="absolute inset-0 flex flex-col items-center justify-center opacity-0 pointer-events-none select-none transition-all duration-300 transform scale-95"
+  >
+    <div class="flex items-center gap-2 mb-1">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+      <span class="text-3xl sm:text-4xl font-bold tracking-tight text-white font-sans">
+        Mphstar.
+      </span>
+    </div>
+
+    <span
+      id="liquid-target-label"
+      class="text-xs font-mono tracking-widest text-neutral-400 uppercase mt-2 mb-6"
+    ></span>
+
+    <!-- High-end Minimalist Loading Bar & Counter -->
+    <div class="flex flex-col items-center gap-2 w-48">
+      <div class="w-full h-[2px] bg-neutral-800 rounded-full overflow-hidden">
+        <div
+          id="liquid-progress-bar"
+          class="h-full bg-gradient-to-r from-neutral-200 to-white w-0 rounded-full transition-all duration-500 ease-out"
+        ></div>
+      </div>
+      <div class="flex justify-between w-full text-[10px] font-mono text-neutral-500">
+        <span>LOADING</span>
+        <span id="liquid-progress-counter">0%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let isTransitionRunning = false;
+  let isListenerRegistered = false;
+
+  // Custom Cubic EaseInOut for smooth organic wave motion
+  function cubicEase(t: number): number {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  // Wave rising from bottom, bowing upward with fluid curve
+  function getEnterPath(p: number): string {
+    const ease = cubicEase(p);
+    const y = 100 * (1 - ease);
+    // Fluid bulge: peaks at midpoint (sinusoidal bell curve)
+    const curve = Math.sin(p * Math.PI) * 36;
+    const cy = y - curve;
+    return `M 0 100 V ${y.toFixed(2)} Q 50 ${cy.toFixed(2)} 100 ${y.toFixed(2)} V 100 z`;
+  }
+
+  // Wave lifting off from bottom upward, center arching upward
+  function getExitPath(p: number): string {
+    const ease = cubicEase(p);
+    const bottomY = 100 * (1 - ease);
+    const curve = Math.sin(p * Math.PI) * 36;
+    const cy = bottomY - curve;
+    return `M 0 ${bottomY.toFixed(2)} Q 50 ${cy.toFixed(2)} 100 ${bottomY.toFixed(2)} V 0 H 0 z`;
+  }
+
+  function animateWave(
+    pathEl: SVGPathElement,
+    generator: (p: number) => string,
+    durationMs: number
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      const startTime = performance.now();
+      function tick(now: number) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / durationMs, 1);
+        pathEl.setAttribute("d", generator(progress));
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          resolve();
+        }
+      }
+      requestAnimationFrame(tick);
+    });
+  }
+
+  // Loading pause animation counter (0% -> 100%)
+  function runLoadingPause(
+    barEl: HTMLElement | null,
+    counterEl: HTMLElement | null,
+    durationMs: number
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      if (barEl) barEl.style.width = "0%";
+      const startTime = performance.now();
+
+      function updateCounter(now: number) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / durationMs, 1);
+        const percent = Math.floor(progress * 100);
+
+        if (counterEl) counterEl.textContent = `${percent}%`;
+        if (barEl) barEl.style.width = `${percent}%`;
+
+        if (progress < 1) {
+          requestAnimationFrame(updateCounter);
+        } else {
+          resolve();
+        }
+      }
+
+      requestAnimationFrame(updateCounter);
+    });
+  }
+
+  function initLiquidTransition() {
+    if (isListenerRegistered) return;
+    isListenerRegistered = true;
+
+    document.addEventListener("astro:before-preparation", (event) => {
+      // Respect user's motion preference
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+
+      // Ignore hash-only navigation on the same page
+      if (
+        event.from.pathname === event.to.pathname &&
+        event.from.search === event.to.search
+      ) {
+        return;
+      }
+
+      const container = document.getElementById("liquid-curtain-container");
+      const pathEl = document.getElementById("liquid-wave-path") as SVGPathElement | null;
+      const brand = document.getElementById("liquid-brand-wrapper");
+      const label = document.getElementById("liquid-target-label");
+      const progressBar = document.getElementById("liquid-progress-bar");
+      const progressCounter = document.getElementById("liquid-progress-counter");
+
+      if (!pathEl || !container) return;
+
+      const originalLoader = event.loader;
+      event.loader = async () => {
+        isTransitionRunning = true;
+        container.style.pointerEvents = "auto";
+
+        if (label && event.to) {
+          const path = event.to.pathname.replace(/\/$/, "");
+          const name = path === "" ? "Home" : path.split("/").pop() || "";
+          label.textContent = `// ${name.replace(/-/g, " ")}`;
+        }
+
+        // Reset progress bar
+        if (progressBar) progressBar.style.width = "0%";
+        if (progressCounter) progressCounter.textContent = "0%";
+
+        // 1. Fluid wave rises from bottom to cover the screen (460ms)
+        await animateWave(pathEl, getEnterPath, 460);
+
+        // Solid cover
+        pathEl.setAttribute("d", "M 0 100 V 0 Q 50 0 100 0 V 100 z");
+
+        // 2. Reveal logo and loading interface smoothly
+        if (brand) {
+          brand.style.opacity = "1";
+          brand.style.transform = "scale(1)";
+        }
+
+        // 3. Jeda Animasi Loading (deliberate motion graphic loading duration: 420ms)
+        await runLoadingPause(progressBar, progressCounter, 420);
+
+        // Load new page DOM
+        await originalLoader();
+      };
+    });
+
+    document.addEventListener("astro:after-swap", async () => {
+      if (!isTransitionRunning) return;
+
+      const container = document.getElementById("liquid-curtain-container");
+      const pathEl = document.getElementById("liquid-wave-path") as SVGPathElement | null;
+      const brand = document.getElementById("liquid-brand-wrapper");
+
+      if (!pathEl || !container) return;
+
+      // Brief pause to appreciate completion before lifting the curtain
+      await new Promise((resolve) => setTimeout(resolve, 80));
+
+      // Fade out loading content smoothly
+      if (brand) {
+        brand.style.opacity = "0";
+        brand.style.transform = "scale(0.95)";
+      }
+
+      // 4. Fluid wave lifts upward, revealing the new page (480ms)
+      await animateWave(pathEl, getExitPath, 480);
+
+      // Reset path to bottom for next navigation
+      pathEl.setAttribute("d", "M 0 100 V 100 Q 50 100 100 100 V 100 z");
+      container.style.pointerEvents = "none";
+      isTransitionRunning = false;
+    });
+  }
+
+  initLiquidTransition();
+</script>

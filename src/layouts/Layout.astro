@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import { ClientRouter } from "astro:transitions";
+import PageTransitionCurtain from "../components/PageTransitionCurtain.astro";
 
 interface Props {
 	title: string;
@@ -66,8 +67,9 @@ const ogImageURL = new URL(image, siteURL);
 		<ClientRouter />
 	</head>
 	<body
-		class="bg-[#fcfcfc] dark:bg-[#111] text-[#111] dark:text-gray-200 font-sans antialiased leading-relaxed max-w-2xl mx-auto px-6 transition-colors duration-300"
+		class="bg-[#fcfcfc] dark:bg-[#111] text-[#111] dark:text-gray-200 font-sans antialiased leading-relaxed max-w-2xl mx-auto px-6 transition-colors duration-300 relative"
 	>
+		<PageTransitionCurtain />
 		<script is:inline>
 			function applyTheme() {
 				const theme = (() => {
@@ -108,22 +110,22 @@ const ogImageURL = new URL(image, siteURL);
 				>
 					<a
 						href="/"
-						class="hover:text-black dark:hover:text-white hover:underline transition-colors"
+						class="motion-nav-link hover:text-black dark:hover:text-white transition-colors"
 						>Home</a
 					>
 					<a
 						href="/portfolio"
-						class="hover:text-black dark:hover:text-white hover:underline transition-colors"
+						class="motion-nav-link hover:text-black dark:hover:text-white transition-colors"
 						>Portfolio</a
 					>
 					<a
 						href="/achievements"
-						class="hover:text-black dark:hover:text-white hover:underline transition-colors"
+						class="motion-nav-link hover:text-black dark:hover:text-white transition-colors"
 						>Achievements</a
 					>
 					<a
 						href="/notes"
-						class="hover:text-black dark:hover:text-white hover:underline transition-colors"
+						class="motion-nav-link hover:text-black dark:hover:text-white transition-colors"
 						>Notes</a
 					>
 				</nav>
@@ -131,12 +133,12 @@ const ogImageURL = new URL(image, siteURL);
 
 			<button
 				id="themeToggle"
-				class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+				class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 active:scale-90"
 				aria-label="Toggle theme"
 			>
 				<svg
 					id="sun-icon"
-					class="w-5 h-5 hidden dark:block"
+					class="w-5 h-5 hidden dark:block transition-transform duration-300 hover:rotate-45"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -149,7 +151,7 @@ const ogImageURL = new URL(image, siteURL);
 				>
 				<svg
 					id="moon-icon"
-					class="w-5 h-5 block dark:hidden"
+					class="w-5 h-5 block dark:hidden transition-transform duration-300 hover:-rotate-12"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -209,10 +211,18 @@ const ogImageURL = new URL(image, siteURL);
 						"opacity-0",
 						"pointer-events-none",
 					);
+					if (lightboxImg) {
+						lightboxImg.classList.remove("scale-95");
+						lightboxImg.classList.add("scale-100");
+					}
 				}
 
 				function closeLightbox() {
 					lightbox.classList.add("opacity-0", "pointer-events-none");
+					if (lightboxImg) {
+						lightboxImg.classList.remove("scale-100");
+						lightboxImg.classList.add("scale-95");
+					}
 				}
 
 				function updateImage() {
@@ -267,6 +277,54 @@ const ogImageURL = new URL(image, siteURL);
 				if (prevBtn) prevBtn.addEventListener("click", prevImage);
 			}
 
+			// Scroll Reveal Engine
+			function initScrollReveal() {
+				const elements = document.querySelectorAll(".reveal-on-scroll:not(.is-revealed)");
+				if (elements.length === 0) return;
+
+				const observer = new IntersectionObserver(
+					(entries) => {
+						entries.forEach((entry) => {
+							if (entry.isIntersecting) {
+								entry.target.classList.add("is-revealed");
+								observer.unobserve(entry.target);
+							}
+						});
+					},
+					{ threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
+				);
+
+				elements.forEach((el) => observer.observe(el));
+			}
+
+			// Lenis Inertia Smooth Scroll
+			let lenisInstance = null;
+			async function initSmoothScroll() {
+				if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+					return;
+				}
+				if (!lenisInstance) {
+					try {
+						const { default: Lenis } = await import("lenis");
+						lenisInstance = new Lenis({
+							duration: 1.05,
+							easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+							touchMultiplier: 1.5,
+						});
+
+						function raf(time) {
+							lenisInstance?.raf(time);
+							requestAnimationFrame(raf);
+						}
+						requestAnimationFrame(raf);
+					} catch {}
+				}
+			}
+
+			document.addEventListener("astro:after-swap", () => {
+				lenisInstance?.scrollTo(0, { immediate: true });
+			});
+
 			// We use astro:page-load to run on initial load AND every client-side navigation
 			document.addEventListener("astro:page-load", () => {
 				if (localStorage.getItem("theme") === "dark") {
@@ -274,6 +332,8 @@ const ogImageURL = new URL(image, siteURL);
 				}
 				initThemeToggle();
 				initMinimalGallery();
+				initScrollReveal();
+				initSmoothScroll();
 			});
 		</script>
 
