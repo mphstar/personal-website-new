@@ -1,11 +1,47 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import AchievementsList from '../components/Achievements.astro';
+
+const site = Astro.site ?? new URL("https://mphstar.my.id");
+const root = new URL("/", site).toString();
+const pageUrl = new URL("/achievements", site).toString();
+
+const structuredData = [
+  {
+    "@type": "CollectionPage",
+    "@id": `${pageUrl}#page`,
+    url: pageUrl,
+    name: "Achievements",
+    description:
+      "Certifications, competition results, and professional training earned by Bintang Malindo Eka Putra (Mphstar).",
+    inLanguage: "en",
+    isPartOf: { "@id": `${root}#website` },
+    about: { "@id": `${root}#person` },
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: root,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Achievements",
+        item: pageUrl,
+      },
+    ],
+  },
+];
 ---
 
-<Layout 
+<Layout
   title="Achievements | Bintang Malindo Eka Putra (Mphstar)"
-  description="Collection of achievements, notes, and certifications earned by Bintang Malindo Eka Putra (Mphstar) throughout his career in tech."
+  description="Certifications and competition results held by Bintang Malindo Eka Putra (Mphstar), including BNSP certification and a national hackathon final."
+  structuredData={structuredData}
 >
   <AchievementsList />
 </Layout>

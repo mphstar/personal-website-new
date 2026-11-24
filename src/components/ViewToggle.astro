@@ -1,0 +1,186 @@
+---
+---
+
+<div data-view-toggle role="group" aria-label="Layout view">
+  <button
+    type="button"
+    data-view-set="list"
+    aria-pressed="false"
+    aria-label="List view"
+    title="List view"
+  >
+    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+    </svg>
+  </button>
+  <button
+    type="button"
+    data-view-set="grid"
+    aria-pressed="false"
+    aria-label="Grid view"
+    title="Grid view"
+  >
+    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5h6v6H4V5zm10 0h6v6h-6V5zM4 13h6v6H4v-6zm10 0h6v6h-6v-6z" />
+    </svg>
+  </button>
+</div>
+
+<script>
+  const STORAGE_KEY = "view-layout";
+  const MORPH_DURATION = 560;
+  const STAGGER_STEP = 26;
+  const STAGGER_CAP = 8;
+
+  let morphRunning = false;
+
+  function syncToggle() {
+    const view =
+      document.documentElement.dataset.view === "grid" ? "grid" : "list";
+
+    document.querySelectorAll<HTMLElement>("[data-view-toggle]").forEach((group) => {
+      group.dataset.ready = "true";
+      group.querySelectorAll<HTMLButtonElement>("[data-view-set]").forEach((button) => {
+        button.setAttribute(
+          "aria-pressed",
+          button.dataset.viewSet === view ? "true" : "false",
+        );
+      });
+    });
+  }
+
+  function commitView(view: string) {
+    document.documentElement.dataset.view = view === "grid" ? "grid" : "list";
+    try {
+      localStorage.setItem(STORAGE_KEY, document.documentElement.dataset.view);
+    } catch {}
+    syncToggle();
+  }
+
+  function reducedMotion() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function visibleItems() {
+    return Array.from(
+      document.querySelectorAll<HTMLElement>(".view-items > *"),
+    );
+  }
+
+  // Fallback for browsers without the View Transition API: staggered settle-in.
+  function settleIn(items: HTMLElement[]) {
+    items.forEach((element, index) => {
+      if (
+        element.classList.contains("reveal-on-scroll") &&
+        !element.classList.contains("is-revealed")
+      ) {
+        return;
+      }
+
+      element.animate(
+        [
+          { opacity: 0, transform: "translateY(10px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        {
+          duration: 420,
+          delay: Math.min(index, STAGGER_CAP) * STAGGER_STEP,
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        },
+      );
+    });
+  }
+
+  function switchView(view: string) {
+    if (morphRunning) return;
+
+    const items = visibleItems();
+
+    if (
+      reducedMotion() ||
+      typeof document.startViewTransition !== "function" ||
+      items.length === 0
+    ) {
+      commitView(view);
+      if (!reducedMotion()) settleIn(items);
+      return;
+    }
+
+    // Only name what is near the viewport: off-screen cards would be captured
+    // for nothing and make the transition heavy on long archives.
+    const margin = window.innerHeight * 0.5;
+    const named: { element: HTMLElement; name: string }[] = [];
+
+    items.forEach((element, index) => {
+      const rect = element.getBoundingClientRect();
+      if (rect.bottom < -margin || rect.top > window.innerHeight + margin) return;
+
+      const name = `view-item-${index}`;
+      element.style.viewTransitionName = name;
+      named.push({ element, name });
+    });
+
+    if (named.length === 0) {
+      commitView(view);
+      return;
+    }
+
+    const root = document.documentElement;
+    const stagger = document.createElement("style");
+    stagger.textContent = named
+      .map(({ name }, order) => {
+        const delay = Math.min(order, STAGGER_CAP) * STAGGER_STEP;
+        return `::view-transition-group(${name}),::view-transition-old(${name}),::view-transition-new(${name}){animation-delay:${delay}ms}`;
+      })
+      .join("");
+
+    root.classList.add("view-anim");
+    document.head.appendChild(stagger);
+    morphRunning = true;
+
+    const cleanup = () => {
+      root.classList.remove("view-anim");
+      stagger.remove();
+      named.forEach(({ element }) => {
+        element.style.viewTransitionName = "";
+      });
+      morphRunning = false;
+    };
+
+    let transition: ViewTransition;
+    try {
+      transition = document.startViewTransition(() => commitView(view));
+    } catch {
+      cleanup();
+      commitView(view);
+      return;
+    }
+
+    transition.finished.then(cleanup, cleanup);
+  }
+
+  function initViewToggle() {
+    const groups = document.querySelectorAll<HTMLElement>("[data-view-toggle]");
+    if (groups.length === 0) return;
+
+    syncToggle();
+
+    groups.forEach((group) => {
+      group.querySelectorAll<HTMLButtonElement>("[data-view-set]").forEach((button) => {
+        if (button.dataset.bound === "true") return;
+        button.dataset.bound = "true";
+
+        button.addEventListener("click", () => {
+          switchView(button.dataset.viewSet === "grid" ? "grid" : "list");
+        });
+      });
+    });
+  }
+
+  document.addEventListener("astro:page-load", initViewToggle);
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initViewToggle, { once: true });
+  } else {
+    initViewToggle();
+  }
+</script>

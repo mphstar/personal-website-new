@@ -51,6 +51,257 @@ html.lenis body {
 .reveal-stagger > *:nth-child(7) { transition-delay: 340ms; }
 .reveal-stagger > *:nth-child(8) { transition-delay: 390ms; }
 
+/* List / grid view switch */
+.view-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--view-gap, 3rem);
+}
+
+/* Card surface: always on for the home teaser */
+.work-card {
+  border: 1px solid #ececec;
+  border-radius: 1rem;
+  background-color: #fff;
+  padding: 0.75rem 0.75rem 1rem;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease,
+              transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.work-card:hover {
+  border-color: #dcdcdc;
+  box-shadow: 0 14px 30px -20px rgba(0, 0, 0, 0.45);
+  transform: translateY(-2px);
+}
+
+.dark .work-card {
+  border-color: #262626;
+  background-color: #151515;
+}
+
+.dark .work-card:hover {
+  border-color: #3a3a3a;
+  box-shadow: 0 14px 30px -20px rgba(0, 0, 0, 0.9);
+}
+
+.work-card .view-body {
+  padding: 0.75rem 0.25rem 0;
+}
+
+.work-card .view-title {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+/* Media frame keeps grid rows aligned without distorting the preview */
+.view-media {
+  display: block;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+/* Grid layout only from 640px up. Below that a grid is a single column,
+   which is just the list with extra chrome, so small screens stay editorial. */
+@media (min-width: 640px) {
+  html[data-view="grid"] .view-items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  html[data-view="grid"] .view-items > * {
+    min-width: 0;
+  }
+
+  html[data-view="grid"] .view-card {
+    border: 1px solid #ececec;
+    border-radius: 1rem;
+    background-color: #fff;
+    padding: 0.75rem 0.75rem 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease,
+                transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  html[data-view="grid"] .view-card:hover {
+    border-color: #dcdcdc;
+    box-shadow: 0 14px 30px -20px rgba(0, 0, 0, 0.45);
+    transform: translateY(-2px);
+  }
+
+  html.dark[data-view="grid"] .view-card {
+    border-color: #262626;
+    background-color: #151515;
+  }
+
+  html.dark[data-view="grid"] .view-card:hover {
+    border-color: #3a3a3a;
+    box-shadow: 0 14px 30px -20px rgba(0, 0, 0, 0.9);
+  }
+
+  html[data-view="grid"] .view-card .view-body {
+    padding: 0.75rem 0.25rem 0;
+  }
+
+  html[data-view="grid"] .view-title {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  html[data-view="grid"] .view-media {
+    aspect-ratio: var(--view-ratio, 16 / 9);
+    background-color: #f4f4f5;
+    margin-bottom: 0;
+  }
+
+  html.dark[data-view="grid"] .view-media {
+    background-color: #1c1c1c;
+  }
+
+  html[data-view="grid"] .view-media img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border: 0;
+    border-radius: 0;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  html[data-view="grid"] .view-media[data-fit="contain"] img {
+    object-fit: contain;
+    padding: 0.5rem;
+  }
+
+  html[data-view="grid"] .view-clamp {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+  }
+}
+
+/* View toggle control: only offered where a grid actually exists */
+[data-view-toggle] {
+  display: none;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  [data-view-toggle][data-ready] {
+    display: inline-flex;
+  }
+}
+
+.dark [data-view-toggle] {
+  border-color: #1f2937;
+}
+
+[data-view-set] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  border-radius: 0.375rem;
+  color: #9ca3af;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+[data-view-set]:hover {
+  color: #111;
+  background-color: #f3f4f6;
+}
+
+.dark [data-view-set]:hover {
+  color: #f9fafb;
+  background-color: #1f2937;
+}
+
+[data-view-set][aria-pressed="true"] {
+  color: #111;
+  background-color: #f3f4f6;
+}
+
+.dark [data-view-set][aria-pressed="true"] {
+  color: #f9fafb;
+  background-color: #1f2937;
+}
+
+[data-view-set]:focus-visible {
+  outline: 2px solid #6b7280;
+  outline-offset: 1px;
+}
+
+/* Compact disclosure used by the home timeline */
+.details-toggle > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.details-toggle > summary::-webkit-details-marker {
+  display: none;
+}
+
+.details-toggle .chevron {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.details-toggle[open] .chevron {
+  transform: rotate(180deg);
+}
+
+.details-toggle > summary:focus-visible {
+  outline: 2px solid #6b7280;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Back to top */
+.scroll-top {
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.scroll-top.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.scroll-top:focus-visible {
+  outline: 2px solid #6b7280;
+  outline-offset: 2px;
+}
+
+/* Notes work-in-progress art: one theme variant loads at a time */
+.wip-art {
+  width: 128px;
+  height: 128px;
+  background-image: url("/assets/notes-wip-light.gif");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.dark .wip-art {
+  background-image: url("/assets/notes-wip-dark.gif");
+}
+
 /* Navigation kinetic underline */
 .motion-nav-link {
   position: relative;
@@ -73,6 +324,53 @@ html.lenis body {
 .motion-nav-link:hover::after {
   transform: scaleX(1);
   transform-origin: left;
+}
+
+/* Theme switch: circular reveal from the viewport center */
+html.theme-anim *,
+html.theme-anim *::before,
+html.theme-anim *::after {
+  transition: none !important;
+}
+
+html.theme-anim::view-transition-old(root),
+html.theme-anim::view-transition-new(root) {
+  animation: none !important;
+  mix-blend-mode: normal;
+}
+
+html.theme-anim::view-transition-old(root) {
+  z-index: 1;
+}
+
+html.theme-anim::view-transition-new(root) {
+  z-index: 2;
+}
+
+/* List <-> grid morph: named cards fly and resize, page chrome swaps instantly */
+html.view-anim::view-transition-group(*) {
+  animation-duration: 560ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.view-anim::view-transition-old(*),
+html.view-anim::view-transition-new(*) {
+  animation-duration: 340ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Root has no cross-fade here, so it must not blend additively */
+html.view-anim::view-transition-old(root),
+html.view-anim::view-transition-new(root) {
+  mix-blend-mode: normal;
+}
+
+html.view-anim::view-transition-old(root) {
+  z-index: 1;
+}
+
+html.view-anim::view-transition-new(root) {
+  z-index: 2;
 }
 
 /* Astro View Transitions */

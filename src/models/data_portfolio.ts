@@ -3,7 +3,7 @@ import SelectionTech from "@/utils/SelectionTech";
 
 const data = [
   {
-    image: "/assets/projects/tokosa.png",
+    image: "/assets/projects/tokosa.webp",
     title: "Toko SA",
     deskripsi:
       "Desktop-based Point of Sale application to make it easier to manage the sale of goods.",
@@ -12,7 +12,7 @@ const data = [
     redirect: null,
   },
   {
-    image: "/assets/projects/sigandrung.png",
+    image: "/assets/projects/sigandrung.webp",
     title: "Sistem Informasi Gandrung",
     deskripsi:
       "Design and develop a desktop-based Mie Gandrung restaurant Point of Sale system.",
@@ -21,7 +21,7 @@ const data = [
     redirect: "https://youtu.be/AMyqNpLCHOQ",
   },
   {
-    image: "/assets/projects/wgoptical.png",
+    image: "/assets/projects/wgoptical.webp",
     title: "WG Optical",
     deskripsi:
       "ERP system for optics with a home service system equipped with transaction, inventory, finance, personnel and distribution modules.",
@@ -35,7 +35,7 @@ const data = [
     redirect: "https://wgoptical.mphstar.my.id/",
   },
   {
-    image: "/assets/projects/tijara.png",
+    image: "/assets/projects/tijara.webp",
     title: "Tijara Store",
     deskripsi:
       "Website and mobile based Point of Sales application for Tijara boutique in Banyuwangi.",
@@ -49,7 +49,7 @@ const data = [
     redirect: "https://tijara.mphstar.my.id/",
   },
   {
-    image: "/assets/projects/gacha.png",
+    image: "/assets/projects/gacha.webp",
     title: "Gacha Anime",
     deskripsi: "Simple app for anime character gacha.",
     github: "https://github.com/mphstar/xrlsnime.git",
@@ -57,7 +57,7 @@ const data = [
     redirect: "https://xrlsnime.vercel.app/",
   },
   {
-    image: "/assets/projects/ehealth.png",
+    image: "/assets/projects/ehealth.webp",
     title: "E-Health",
     deskripsi:
       "The E-Health system is a health facility owned by the Jember Regency Government which has several features including online queue registration specifically for outpatient care at Puskesmas and Hospitals owned by the Jember Regency government, information on the distribution of Health Facility locations, complaint services, queue monitoring, and information. ",
@@ -70,7 +70,7 @@ const data = [
     redirect: "https://ehealth.mphstar.my.id/",
   },
   {
-    image: "/assets/projects/kiosk.png",
+    image: "/assets/projects/kiosk.webp",
     title: "Gesture Recognition Technology based Kiosk",
     deskripsi:
       "Point of Sale website with the addition of Gesture Recognition to be able to control just by moving your hand on the camera sensor. After making a transaction, the transaction note will be printed automatically. Has admin access rights that can add, change, delete items displayed, as well as view the entire transaction history.",
@@ -79,7 +79,7 @@ const data = [
     redirect: null,
   },
   {
-    image: "/assets/projects/realtime-chat.png",
+    image: "/assets/projects/realtime-chat.webp",
     title: "Realtime Group Chatting",
     deskripsi: "Simple app for Group Chatting",
     github: "https://github.com/mphstar/realtime-chat.git",
@@ -87,7 +87,7 @@ const data = [
     redirect: null,
   },
   {
-    image: "/assets/projects/pdp.png",
+    image: "/assets/projects/pdp.webp",
     title: "PDP Jember",
     deskripsi:
       "Decision support system for selecting plants based on soil content based on a Geographic Information System using the Learning Vector Quantization method.",
@@ -100,7 +100,7 @@ const data = [
     redirect: "https://pdp-jember.com",
   },
   {
-    image: "/assets/projects/cf.png",
+    image: "/assets/projects/cf.webp",
     title: "CF Warehouse Polije",
     deskripsi:
       "Dataset storage platform that allows users to upload, view, and download datasets in various formats.",
@@ -121,7 +121,7 @@ const data = [
     redirect: null,
   },
   {
-    image: "/assets/projects/mbkm.png",
+    image: "/assets/projects/mbkm.webp",
     title: "Sistem MBKM Polije",
     deskripsi: "MBKM information system for Jember State Polytechnic Students",
     github: null,
@@ -129,7 +129,7 @@ const data = [
     redirect: "https://mbkm.polije.ac.id/",
   },
   {
-    image: "/assets/projects/jetnime.jpeg",
+    image: "/assets/projects/jetnime.webp",
     title: "Jetnime",
     deskripsi:
       "Simple app for list Anime. This project created for Submission course in dicoding.com",
@@ -138,7 +138,7 @@ const data = [
     redirect: null,
   },
   {
-    image: "/assets/projects/note.png",
+    image: "/assets/projects/note.webp",
     title: "Notepad React",
     deskripsi:
       "Simple app notepad in Website. This project created for Submission course in dicoding.com",
@@ -147,7 +147,7 @@ const data = [
     redirect: "https://note-react-app-eosin.vercel.app/",
   },
   {
-    image: "/assets/projects/lapor.png",
+    image: "/assets/projects/lapor.webp",
     title: "Lapor App FKIP Universitas Jember",
     deskripsi:
       "Website and Mobile Application faculty Report Universitas Jember",
@@ -163,7 +163,7 @@ const data = [
     redirect: "https://lapor.fkipunej.my.id/",
   },
   {
-    image: "/assets/projects/ssc.png",
+    image: "/assets/projects/ssc.webp",
     title: "SSC SMASA 2024",
     deskripsi: "Science School Competition 2024 SMA Negeri 1 Jember",
     github: null,
@@ -175,7 +175,7 @@ const data = [
     redirect: "https://sscxxiv.com",
   },
   {
-    image: "/assets/projects/sarpras.png",
+    image: "/assets/projects/sarpras.webp",
     title: "E-Sarpras FKIP Universitas Jember",
     deskripsi:
       "Aplikasi website untuk peminjaman barang ataupun ruangan pada Fakultas Keguruan dan Keilmuan Universitas Jember.",
@@ -189,7 +189,7 @@ const data = [
     redirect: "https://sarpras.fkipunej.my.id/",
   },
   {
-    image: "/assets/projects/howa.png",
+    image: "/assets/projects/howa.webp",
     title: "Howardle Dsy",
     deskripsi: "Implementasi UI Design Howardle Dsy to Website.",
     github: "https://github.com/mphstar/howardle-dsy.git",
@@ -197,7 +197,7 @@ const data = [
     redirect: "https://howardle-dsy.vercel.app/",
   },
   {
-    image: "/assets/projects/ai.png",
+    image: "/assets/projects/ai.webp",
     title: "Mphstar AI",
     deskripsi: "Integrate with Gemini AI API.",
     github: "https://github.com/mphstar/mphstar-ai.git",
@@ -205,7 +205,7 @@ const data = [
     redirect: "https://mphstar-ai.vercel.app/",
   },
   {
-    image: "/assets/projects/sck.png",
+    image: "/assets/projects/sck.webp",
     title: "SCK-CO",
     deskripsi:
       "Website Marketplace  & product documentation with payment getway and dashboard admin develop by diprojectin",
@@ -219,7 +219,7 @@ const data = [
     redirect: "https://sckco.mphstar.my.id/",
   },
   {
-    image: "/assets/projects/esystem.png",
+    image: "/assets/projects/esystem.webp",
     title: "E-System",
     deskripsi:
       "Website Marketplace  & product documentation with payment getway and dashboard admin develop by diprojectin",
@@ -228,7 +228,7 @@ const data = [
     redirect: "https://e-system-website.vercel.app/",
   },
   {
-    image: "/assets/projects/ksuli.png",
+    image: "/assets/projects/ksuli.webp",
     title: "K-Suli SIBI",
     deskripsi:
       "Learning SIBI with K-Suli. Detection Hand Sign using Deep Learning.",
@@ -241,7 +241,7 @@ const data = [
     redirect: "https://ksuli-sibi.vercel.app/",
   },
   {
-    image: "/assets/projects/safepath.png",
+    image: "/assets/projects/safepath.webp",
     title: "Safepath",
     deskripsi:
       "Mapping of crime and accidents in Jember city. This project created for competition Hackaton & Smart City Gemastik",
@@ -254,7 +254,7 @@ const data = [
     redirect: "https://safepath.mphstar.my.id/",
   },
   {
-    image: "/assets/projects/jvims.png",
+    image: "/assets/projects/jvims.webp",
     title: "J-ViMS",
     deskripsi:
       "Website and mobile application for managing tourist tickets in Jember city",
@@ -268,7 +268,7 @@ const data = [
     redirect: "https://j-vims.com/",
   },
   {
-    image: "/assets/projects/diteras.png",
+    image: "/assets/projects/diteras.webp",
     title: "D-Teras",
     deskripsi: "Point of Sale Website for D-Teras",
     github: null,
@@ -276,7 +276,7 @@ const data = [
     redirect: null,
   },
   {
-    image: "/assets/projects/ncv.png",
+    image: "/assets/projects/ncv.webp",
     title: "NCV Studio",
     deskripsi:
       "Official website of NCV Studio, NCV is a creative agency specializing in branding, animation, and design. We transform ideas into meaningful visual creations. With a dedicated team, we deliver innovative solutions in motion graphics, illustration, 3D motion, Live2D, mixing mastering, MV, and video production.",
@@ -291,7 +291,7 @@ const data = [
     redirect: "https://ncv-studio.vercel.app/",
   },
   {
-    image: "/assets/projects/jtimerch.png",
+    image: "/assets/projects/jtimerch.webp",
     title: "JTI Merch",
     deskripsi: "Point of Sale Website for JTI Merch.",
     github: null,
@@ -299,7 +299,7 @@ const data = [
     redirect: null,
   },
   {
-    image: "/assets/projects/jpims.png",
+    image: "/assets/projects/jpims.webp",
     title: "J-PiMS",
     deskripsi:
       "Personalized tourism management system for Jember to curate destinations and experiences.",
@@ -308,7 +308,7 @@ const data = [
     redirect: "https://j-pims.com/",
   },
   {
-    image: "/assets/projects/jdims.png",
+    image: "/assets/projects/jdims.webp",
     title: "J-DiMS",
     deskripsi:
       "Digital museum platform for Jember to showcase collections and stories online.",
@@ -317,7 +317,7 @@ const data = [
     redirect: "https://j-dims.com/",
   },
   {
-    image: "/assets/projects/gocpns.png",
+    image: "/assets/projects/gocpns.webp",
     title: "Go-CPNS",
     deskripsi:
       "Tryout website for CPNS preparation similar to ayocpns with practice tests and progress tracking.",
@@ -326,7 +326,7 @@ const data = [
     redirect: null,
   },
   {
-    image: "/assets/projects/nch.png",
+    image: "/assets/projects/nch.webp",
     title: "NCH Project",
     deskripsi:
       "Pesantren school information system (SD/SMP/SMA); contributed to master data, academic, reporting, and finance modules.",
@@ -335,7 +335,7 @@ const data = [
     redirect: "https://www.nurulchotib.com/",
   },
   {
-    image: "/assets/projects/padisda.png",
+    image: "/assets/projects/padisda.webp",
     title: "Padisda",
     deskripsi:
       "Membership management platform complete with digital member cards and directory features.",

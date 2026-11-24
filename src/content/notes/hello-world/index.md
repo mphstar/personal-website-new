@@ -2,6 +2,7 @@
 title: "Hello World"
 description: "Pembaruan pertama dari sistem Notes Markdown."
 date: "2026-04-02"
+lang: "id"
 ---
 
 Selamat datang di *Notes*! Ini adalah sebuah postingan contoh digital garden.

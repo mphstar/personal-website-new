@@ -1,11 +1,46 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import PortfolioGrid from '../components/Portfolio.astro';
+
+const site = Astro.site ?? new URL("https://mphstar.my.id");
+const pageUrl = new URL("/portfolio", site).toString();
+
+const structuredData = [
+  {
+    "@type": "CollectionPage",
+    "@id": `${pageUrl}#page`,
+    url: pageUrl,
+    name: "Portfolio",
+    description:
+      "Web and mobile projects built by Bintang Malindo Eka Putra (Mphstar), including ERP systems, point-of-sale tools, and community platforms.",
+    inLanguage: "en",
+    isPartOf: { "@id": `${new URL("/", site).toString()}#website` },
+    about: { "@id": `${new URL("/", site).toString()}#person` },
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: new URL("/", site).toString(),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Portfolio",
+        item: pageUrl,
+      },
+    ],
+  },
+];
 ---
 
-<Layout 
+<Layout
   title="Portfolio | Bintang Malindo Eka Putra (Mphstar)"
-  description="Explore the web and mobile development portfolio of Bintang Malindo Eka Putra (Mphstar). Discover various scalable applications and projects."
+  description="Web and mobile projects by Bintang Malindo Eka Putra (Mphstar): ERP systems, point-of-sale apps, dashboards, and community platforms."
+  structuredData={structuredData}
 >
   <PortfolioGrid />
 </Layout>

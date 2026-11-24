@@ -1,0 +1,188 @@
+import { readdir, stat, readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
+import sharp from "sharp";
+
+const root = process.cwd();
+const publicDir = path.join(root, "public");
+const dimensionsFile = path.join(root, "src", "models", "image-dimensions.ts");
+
+const targets = [
+  {
+    dir: path.join(publicDir, "assets", "projects"),
+    urlBase: "/assets/projects",
+    maxSize: 1200,
+    quality: 78,
+    dataFiles: [path.join(root, "src", "models", "data_portfolio.ts")],
+  },
+  {
+    dir: path.join(publicDir, "assets", "sertif"),
+    urlBase: "/assets/sertif",
+    maxSize: 1400,
+    quality: 80,
+    dataFiles: [path.join(root, "src", "models", "data_achievements.ts")],
+  },
+];
+
+const imagePattern = /\.(png|jpe?g|jfif|webp)$/i;
+const kb = (bytes) => Math.round(bytes / 1024);
+
+async function optimize() {
+  const replacements = new Map();
+  const report = [];
+  const dimensions = new Map();
+  const produced = new Set();
+  let beforeTotal = 0;
+  let afterTotal = 0;
+
+  for (const target of targets) {
+    const entries = await readdir(target.dir, { withFileTypes: true });
+
+    for (const entry of entries) {
+      if (!entry.isFile() || !imagePattern.test(entry.name)) continue;
+
+      const sourcePath = path.join(target.dir, entry.name);
+      const baseName = entry.name.replace(imagePattern, "");
+      const outputName = `${baseName}.webp`;
+      const outputPath = path.join(target.dir, outputName);
+      const alreadyWebp = /\.webp$/i.test(entry.name);
+
+      // Two sources can share a basename (photo.jpg and photo.jfif).
+      if (!alreadyWebp && produced.has(outputPath)) continue;
+
+      const before = (await stat(sourcePath)).size;
+      const pipeline = sharp(sourcePath, { failOn: "none" }).rotate();
+      const meta = await pipeline.metadata();
+
+      if (!alreadyWebp) {
+        const needsResize =
+          (meta.width ?? 0) > target.maxSize ||
+          (meta.height ?? 0) > target.maxSize;
+
+        const processed = needsResize
+          ? pipeline.resize({
+              width: target.maxSize,
+              height: target.maxSize,
+              fit: "inside",
+              withoutEnlargement: true,
+            })
+          : pipeline;
+
+        await processed
+          .webp({ quality: target.quality, effort: 5 })
+          .toFile(outputPath);
+
+        produced.add(outputPath);
+
+        const after = (await stat(outputPath)).size;
+        beforeTotal += before;
+        afterTotal += after;
+
+        replacements.set(
+          `${target.urlBase}/${entry.name}`,
+          `${target.urlBase}/${outputName}`,
+        );
+
+        report.push({
+          name: `${path.basename(target.dir)}/${entry.name}`,
+          before: kb(before),
+          after: kb(after),
+          size: `${meta.width}x${meta.height}`,
+        });
+      }
+
+      const finalPath = alreadyWebp ? sourcePath : outputPath;
+      const finalMeta = await sharp(finalPath).metadata();
+      dimensions.set(`${target.urlBase}/${outputName}`, [
+        finalMeta.width ?? 0,
+        finalMeta.height ?? 0,
+      ]);
+    }
+  }
+
+  const dataFiles = new Set(targets.flatMap((target) => target.dataFiles));
+
+  for (const file of dataFiles) {
+    let content = await readFile(file, "utf8");
+    let changes = 0;
+
+    for (const [oldUrl, newUrl] of replacements) {
+      if (content.includes(oldUrl)) {
+        content = content.split(oldUrl).join(newUrl);
+        changes += 1;
+      }
+    }
+
+    if (changes > 0) {
+      await writeFile(file, content, "utf8");
+    }
+
+    console.log(`${path.basename(file)}: ${changes} path(s) rewritten`);
+  }
+
+  report.sort((a, b) => b.before - a.before);
+  for (const row of report) {
+    console.log(
+      `${row.name.padEnd(44)} ${String(row.before).padStart(6)}KB -> ${String(row.after).padStart(5)}KB  (${row.size})`,
+    );
+  }
+
+  console.log(
+    `\nTotal: ${kb(beforeTotal)}KB -> ${kb(afterTotal)}KB (${Math.round((1 - afterTotal / beforeTotal) * 100)}% smaller)`,
+  );
+
+  return dimensions;
+}
+
+async function buildAvatar() {
+  const source = path.join(publicDir, "assets", "pp.png");
+  const variants = [
+    { name: "pp-192.webp", size: 192 },
+    { name: "pp-384.webp", size: 384 },
+  ];
+
+  const before = (await stat(source)).size;
+
+  for (const variant of variants) {
+    const output = path.join(publicDir, "assets", variant.name);
+    await sharp(source)
+      .resize(variant.size, variant.size, { fit: "cover", position: "top" })
+      .webp({ quality: 82, effort: 5 })
+      .toFile(output);
+    console.log(
+      `avatar ${variant.name.padEnd(16)} ${kb((await stat(output)).size)}KB (from ${kb(before)}KB)`,
+    );
+  }
+}
+
+async function writeDimensions(dimensions) {
+  const sorted = [...dimensions.entries()].sort(([a], [b]) =>
+    a.localeCompare(b),
+  );
+
+  const lines = sorted
+    .map(([url, [width, height]]) => `  "${url}": [${width}, ${height}],`)
+    .join("\n");
+
+  const content = `// Generated by scripts/optimize-images.mjs. Do not edit by hand.
+export type ImageDimensions = [width: number, height: number];
+
+const imageDimensions: Record<string, ImageDimensions> = {
+${lines}
+};
+
+export default imageDimensions;
+`;
+
+  await writeFile(dimensionsFile, content, "utf8");
+  console.log(`\nWrote ${sorted.length} dimensions to ${path.relative(root, dimensionsFile)}`);
+}
+
+optimize()
+  .then(async (dimensions) => {
+    await buildAvatar();
+    await writeDimensions(dimensions);
+  })
+  .catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });

@@ -20,5 +20,26 @@ export default defineConfig({
       },
     },
   },
-  integrations: [react(), sitemap()]
+  integrations: [
+    react(),
+    sitemap({
+      serialize(item) {
+        const { pathname } = new URL(item.url);
+        const path = pathname.replace(/\/+$/, "") || "/";
+
+        if (path === "/") {
+          item.priority = 1.0;
+          item.changefreq = "weekly";
+        } else if (path === "/portfolio" || path === "/achievements") {
+          item.priority = 0.8;
+          item.changefreq = "monthly";
+        } else if (path.startsWith("/notes")) {
+          item.priority = 0.5;
+          item.changefreq = "monthly";
+        }
+
+        return item;
+      },
+    }),
+  ],
 });
